@@ -1,3 +1,19 @@
+// Search O(n)
+// Lookup O(1)
+// Push O(1)
+// Insert O(n)
+// Delete O(n)
+
+// Pros
+// Fast lookups
+// Fast push/pop
+// Ordered
+
+// Cons
+// Slow inserts
+// Slow deletes
+// Fixed size (is using static arrays)
+
 console.log('array');
 const array = [1, 2, 3, 4, 5];
 
