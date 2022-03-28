@@ -57,7 +57,6 @@ class BinarySearchTree {
     if (!this.root) {
       return false;
     }
-
     let currentNode = this.root;
     while (currentNode) {
       if (value < currentNode.value) {
@@ -78,6 +77,7 @@ class BinarySearchTree {
     let currentNode = this.root;
     let parentNode = null;
     while (currentNode) {
+      // Move through the tree, holding on to both current and parent nodes
       if (value < currentNode.value) {
         parentNode = currentNode;
         currentNode = currentNode.left;
@@ -89,6 +89,7 @@ class BinarySearchTree {
 
         // Option 1 - no right child
         if (currentNode.right === null) {
+          // If we are on the root node, with no right child, we remove the root and the left child becomes the new root
           if (parentNode === null) {
             this.root = currentNode.left;
           } else {
@@ -106,7 +107,6 @@ class BinarySearchTree {
             this.root = currentNode.left;
           } else {
             currentNode.right.left = currentNode.left;
-
             // if parent > current, make right child of the left the parent
             if (currentNode.value < parentNode.value) {
               parentNode.left = currentNode.right;
@@ -124,7 +124,6 @@ class BinarySearchTree {
             leftmostParent = leftmost;
             leftmost = leftmost.left;
           }
-
           // Parent's left subtree is now leftmost's right subtree
           leftmostParent.left = leftmost.right;
           leftmost.left = currentNode.left;
@@ -144,6 +143,47 @@ class BinarySearchTree {
       }
     }
   }
+  breadthFirstSearch() {
+    let currentNode = this.root;
+    let list = [];
+    let queue = [];
+    queue.push(currentNode);
+
+    while (queue.length > 0) {
+      currentNode = queue.shift();
+      list.push(currentNode.value);
+      if (currentNode.left) {
+        queue.push(currentNode.left);
+      }
+      if (currentNode.right) {
+        queue.push(currentNode.right);
+      }
+    }
+    return list;
+  }
+  breadthFirstRecursive(queue, list) {
+    if (!queue.length) {
+      return list;
+    }
+    let currentNode = queue.shift();
+    list.push(currentNode.value);
+    if (currentNode.left) {
+      queue.push(currentNode.left);
+    }
+    if (currentNode.right) {
+      queue.push(currentNode.right);
+    }
+    return this.breadthFirstRecursive(queue, list);
+  }
+  DFSInOrder() {
+    return traverseInOrder(this.root, []);
+  }
+  DFSPreOrder() {
+    return traversePreOrder(this.root, []);
+  }
+  DFSPostOrder() {
+    return traversePostOrder(this.root, []);
+  }
 }
 
 function traverse(node) {
@@ -153,6 +193,37 @@ function traverse(node) {
   return tree;
 }
 
+function traverseInOrder(node, list) {
+  if (node.left) {
+    traverseInOrder(node.left, list);
+  }
+  list.push(node.value);
+  if (node.right) {
+    traverseInOrder(node.right, list);
+  }
+  return list;
+}
+function traversePreOrder(node, list) {
+  list.push(node.value);
+  if (node.left) {
+    traversePreOrder(node.left, list);
+  }
+  if (node.right) {
+    traversePreOrder(node.right, list);
+  }
+  return list;
+}
+function traversePostOrder(node, list) {
+  if (node.left) {
+    traversePostOrder(node.left, list);
+  }
+  if (node.right) {
+    traversePostOrder(node.right, list);
+  }
+  list.push(node.value);
+  return list;
+}
+
 const tree = new BinarySearchTree();
 tree.insert(9);
 tree.insert(4);
@@ -160,8 +231,13 @@ tree.insert(6);
 tree.insert(20);
 tree.insert(170);
 tree.insert(15);
-tree.insert(6);
+tree.insert(1);
 console.log(tree.lookup(6));
 console.log(JSON.stringify(traverse(tree.root)));
-console.log(tree.remove(170));
+// console.log(tree.remove(170));
 console.log(JSON.stringify(traverse(tree.root)));
+console.log(tree.breadthFirstSearch());
+console.log(tree.breadthFirstRecursive([tree.root], []));
+console.log(tree.DFSInOrder());
+console.log(tree.DFSPreOrder());
+console.log(tree.DFSPostOrder());
